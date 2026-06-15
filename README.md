@@ -56,7 +56,7 @@ Challeges: While installing packages with homebrew, there was a error with qt. W
 
 Error when building MFC:
 <img width="1071" height="109" alt="Screenshot 2026-06-15 at 12 19 39 AM" src="https://github.com/user-attachments/assets/8c35a8db-dc97-4406-9808-e9cf671c7796" />
-
+Resolved by changing to utilizing Python 3.13 instead of Python 3.14 due to known issue with ensurepip in 3.14.
 
 ### Steps to Reproduce
 

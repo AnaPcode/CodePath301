@@ -55,7 +55,7 @@ Challeges: While installing packages with homebrew, there was a error with qt. W
 
 
 Error when building MFC:
-<img width="909" height="717" alt="Screenshot 2026-06-14 at 11 59 18 PM" src="https://github.com/user-attachments/assets/938459f5-eb73-4f55-ac91-b98223ad6c09" />
+<img width="1071" height="109" alt="Screenshot 2026-06-15 at 12 19 39 AM" src="https://github.com/user-attachments/assets/8c35a8db-dc97-4406-9808-e9cf671c7796" />
 
 
 ### Steps to Reproduce

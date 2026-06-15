@@ -48,17 +48,19 @@ toolchain/mfc/user_guide.py:56-65 — all-yellow ORG_COLORS
 ### Environment Setup
 
 [Notes on setting up your local development environment - challenges you faced, how you solved them]
+Utilized instructions from https://mflowcode.github.io/documentation/getting-started.html. Ran the program on a MacBook Air with operating system macOS 26.3.
+First, cloned the repository for local development. The utilized homebrew to install the packages.
 
 ### Steps to Reproduce
 
-1. [Step 1]
-2. [Step 2]
-3. [Observed result]
+1. Run MFC
+
+The issue is a refactor so need to run program to view how program currently runs.
 
 ### Reproduction Evidence
 
-- **Commit showing reproduction:** [Link to commit in your fork]
-- **Screenshots/logs:** [If applicable]
+- **Commit showing reproduction:** https://github.com/AnaPcode/MFC/tree/master
+- **Screenshots/logs:** not applicable
 - **My findings:** [What you discovered during reproduction]
 
 ---
@@ -68,10 +70,12 @@ toolchain/mfc/user_guide.py:56-65 — all-yellow ORG_COLORS
 ### Analysis
 
 [Your analysis of the root cause - what's causing the issue?]
+This issue is a refactor.
 
 ### Proposed Solution
 
 [High-level description of your fix approach]
+Maintener has outlined what needs to be refactored.
 
 ### Implementation Plan
 

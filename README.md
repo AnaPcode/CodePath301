@@ -50,6 +50,10 @@ toolchain/mfc/user_guide.py:56-65 — all-yellow ORG_COLORS
 [Notes on setting up your local development environment - challenges you faced, how you solved them]
 Utilized instructions from https://mflowcode.github.io/documentation/getting-started.html. Ran the program on a MacBook Air with operating system macOS 26.3.
 First, cloned the repository for local development. The utilized homebrew to install the packages.
+Challeges: While installing packages with homebrew, there was a error with qt. Will monitor if the issue affects any part of the program.
+<img width="909" height="717" alt="Screenshot 2026-06-14 at 11 59 18 PM" src="https://github.com/user-attachments/assets/62409c38-2816-44a3-87fb-5b0d70c8f014" />
+
+
 
 ### Steps to Reproduce
 

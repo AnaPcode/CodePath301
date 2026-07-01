@@ -85,6 +85,8 @@ This issue is a refactor.
 
 [High-level description of your fix approach]
 Maintener has outlined what needs to be refactored.
+There are 5 small cleanups betweeen 5 different files and maintener has outlined each one by assigning a letter as well as what is expected to be fixed.
+For the first file (a), there is a dictionary appearing in two places.
 
 ### Implementation Plan
 

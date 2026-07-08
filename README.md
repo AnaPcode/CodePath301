@@ -101,7 +101,12 @@ Using UMPIRE framework (adapted):
 2. [Add function Z]
 3. [Update tests]
 
+There issue lists 5 tasks. 4 of them are considered good first issue small cleanups. The first step is to create a feature branch to hold changes for the first 4 tasks since maintainers request there to be 2 separate pull requests where the first includes the first 4 tasks and the second is the last task.
+
+
 **Implement:** [Link to your branch/commits as you work]
+
+
 
 **Review:** [Self-review checklist - does it follow the project's contribution guidelines?]
 

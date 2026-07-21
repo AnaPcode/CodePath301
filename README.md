@@ -103,6 +103,10 @@ Using UMPIRE framework (adapted):
 
 There issue lists 5 tasks. 4 of them are considered good first issue small cleanups. The first step is to create a feature branch to hold changes for the first 4 tasks since maintainers request there to be 2 separate pull requests where the first includes the first 4 tasks and the second is the last task.
 
+Completed Tasks
+fp_stability.py: Removed duplication of the 13-key default result dictionary by extracting it into a reusable _empty_result(name, threshold) helper. This centralizes default-result construction and improves maintainability.
+gen_case_constraints_docs.py: Consolidated three duplicate getter functions (get_model_name, get_riemann_solver_name, and get_time_stepper_name) into a shared _named(param, value) helper. Also moved the duplicated level-to-emoji mapping into a single module-level constant to avoid repetition.
+Working on sched.py
 
 **Implement:** [Link to your branch/commits as you work]
 Link to branch: https://github.com/AnaPcode/MFC/tree/refactor/fp-stability-cleanup

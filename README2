@@ -1,0 +1,162 @@
+# Contribution #1: A multi-word environment value in toolchain/modules is silently truncated to its first word
+ #1690
+
+**Contribution Number:** 1  
+**Student:** Anastasia Pupo
+**Issue:** https://github.com/MFlowCode/MFC/issues/1690
+**Status:** Phase I
+
+---
+
+## Why I Chose This Issue
+
+Difficulties with first issue chosen so postponing for now, decided to seek a new first issue to attempt. Chose this issue since the maintainer labeled it as a good first issue and has been recently posted.
+---
+
+## Understanding the Issue
+
+### Problem Description
+
+The script uses eval "export $_entry" to set each KEY=value line as an environment variable, but because $_entry isn't quoted, eval re-reads the line and splits it into separate words at every space, so a value containing a space gets cut off after the first word, and the rest silently fails as an invalid export instead of becoming part of the variable's value.
+
+### Expected Behavior
+
+The full multi-word value should be stored as-is in the environment variable, with no truncation and no silent failure, regardless of spaces in it.
+
+### Current Behavior
+
+The environment variable only ends up holding the first word of the value (everything before the first space), while the rest of the value is silently dropped due to a failed export that errors out to stderr, which the script discards, so no one sees any warning that something went wrong.
+
+### Affected Components
+
+toolchain/bootstrap/modules.sh (specifically the module-loading logic around lines 124-127 that processes KEY=value entries from the toolchain/modules file).
+
+
+---
+
+## Reproduction Process
+
+### Environment Setup
+
+Utilizing Github codespaces.
+
+### Steps to Reproduce
+
+1. Run MFC
+
+2. Follow reproduction steps outlined in issue.
+
+### Reproduction Evidence
+
+- **Commit showing reproduction:** https://github.com/AnaPcode/MFC/tree/master
+- **Screenshots/logs:** 
+- **My findings:** [What you discovered during reproduction]
+
+---
+
+## Solution Approach
+
+### Analysis
+
+[Your analysis of the root cause - what's causing the issue?]
+
+
+### Proposed Solution
+
+[High-level description of your fix approach]
+
+### Implementation Plan
+
+Using UMPIRE framework (adapted):
+
+**Understand:** [Restate the problem]
+
+**Match:** [What similar patterns/solutions exist in the codebase?]
+
+**Plan:** [Step-by-step implementation plan]
+1. [Modify file X to do Y]
+2. [Add function Z]
+3. [Update tests]
+
+Completed Tasks
+
+**Implement:** [Link to your branch/commits as you work]
+
+**Review:** [Self-review checklist - does it follow the project's contribution guidelines?]
+
+**Evaluate:** [How will you verify it works?]
+
+---
+
+## Testing Strategy
+
+### Unit Tests
+
+- [ ] Test case 1: [Description]
+- [ ] Test case 2: [Description]
+- [ ] Test case 3: [Description]
+
+### Integration Tests
+
+- [ ] Integration scenario 1
+- [ ] Integration scenario 2
+
+### Manual Testing
+
+[What you tested manually and results]
+
+---
+
+## Implementation Notes
+
+### Week [X] Progress
+
+[What you built this week, challenges faced, decisions made]
+
+### Week [Y] Progress
+
+[Continue documenting as you work]
+
+### Code Changes
+
+- **Files modified:** [List]
+- **Key commits:** [Links to important commits]
+- **Approach decisions:** [Why you chose certain approaches]
+
+---
+
+## Pull Request
+
+**PR Link:** [GitHub PR URL when submitted]
+
+**PR Description:** [Draft or final PR description - much of the content above can be adapted]
+
+**Maintainer Feedback:**
+- [Date]: [Summary of feedback received]
+- [Date]: [How you addressed it]
+
+**Status:** [Awaiting review / Iterating / Approved / Merged]
+
+---
+
+## Learnings & Reflections
+
+### Technical Skills Gained
+
+[What you learned technically]
+
+### Challenges Overcome
+
+[What was hard and how you solved it]
+
+### What I'd Do Differently Next Time
+
+[Reflection on your process]
+
+---
+
+## Resources Used
+
+- [Link to helpful documentation]
+- [Tutorial or Stack Overflow post that helped]
+- [GitHub issues or discussions that helped]

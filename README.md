@@ -85,29 +85,32 @@ The maintainer has already outlined the fix for each file directly in the issue,
 
 Using UMPIRE framework (adapted):
 
-**Understand:** [Restate the problem]
+**Understand:** The issue requires four small cleanups across three different files ((c), (d), (e), with (c) containing two separate cleanups), all mechanical and behavior-preserving, suitable for a "good first issue." A fifth item (b) is a larger structural refactor that the maintainer has explicitly asked to be scoped as a separate pull request. A fourth file (a) was also named in the issue, but investigation during reproduction found it already resolved on master, so no changes were made there. This plan covers the three files actually modified: (c), (d), and (e).
 
-**Match:** [What similar patterns/solutions exist in the codebase?]
+**Match:** The codebase already contains examples of the pattern each fix should follow. Helper functions that take parameters and return a shared result are a common pattern throughout the toolchain, matching the shape of the _named(param, value) helper needed for (c). Module-level constants are already used elsewhere in the codebase for shared, unchanging values, which is the same pattern needed to fix the duplicated emoji map in (c).
 
-**Plan:** [Step-by-step implementation plan]
-1. [Modify file X to do Y]
-2. [Add function Z]
-3. [Update tests]
+**Plan:**
+1, Create a feature branch to hold changes for the good-first-issue tasks, since the maintainer has requested two separate pull requests: one covering (a), (c), (d), (e), and a second, separate one for (b).
+2. Modify gen_case_constraints_docs.py (c) with two separate commits, since this file has two distinct cleanups: first, add a LEVEL_EMOJI module-level constant and update both locations that previously duplicated the emoji map to reference it instead. Second, add a _named(param, value) helper function and update the three getter call sites (model_eqns, riemann_solver, time_stepper) to use it.
+3. Modify sched.py (d) in a single commit: update the comparisons in notify_long_running_threads to read threshold values directly from the HEADLESS_THRESHOLDS table instead of re-hardcoding them.
+4. Modify user_guide.py (e) in a single commit: remove the redundant ORG_COLORS dictionary and inline the single color value it always resolved to at the lookup site.
+5. Verify each change preserves existing behavior by comparing actual output (or underlying values, where output isn't directly comparable) before and after each modification, since these are refactors and no new automated tests are being added for behavior that is not changing.
+6. Push the branch and open the pull request covering (c), (d), and (e), noting that (a) required no changes.
 
-There issue lists 5 tasks. 4 of them are considered good first issue small cleanups. The first step is to create a feature branch to hold changes for the first 4 tasks since maintainers request there to be 2 separate pull requests where the first includes the first 4 tasks and the second is the last task.
+**Implement:**
+Link to branch: https://github.com/AnaPcode/MFC/tree/feature/tooling-dedup
+Link to 4 commits:
+Hoist level emoji map to LEVEL_EMOJI constant: https://github.com/MFlowCode/MFC/commit/718ef21fb2bfb9ae20cc460622190fdffabf2e46
+Collapse schema-name getters into _named helper: https://github.com/MFlowCode/MFC/commit/212f2de1b68d980f0c029bf2795ba19bb52f769d
+Read threshold seconds from HEADLESS_THRESHOLDS: https://github.com/MFlowCode/MFC/commit/1d5406eec4e750d75a6c7198fc8460a8b044eeb4
+Delete ORG_COLORS and inline "yellow": https://github.com/AnaPcode/MFC/pull/1/changes/065e86f28280e13c90dc05e2e519541f1be84269
 
-Completed Tasks
-fp_stability.py: Removed duplication of the 13-key default result dictionary by extracting it into a reusable _empty_result(name, threshold) helper. This centralizes default-result construction and improves maintainability.
-gen_case_constraints_docs.py: Consolidated three duplicate getter functions (get_model_name, get_riemann_solver_name, and get_time_stepper_name) into a shared _named(param, value) helper. Also moved the duplicated level-to-emoji mapping into a single module-level constant to avoid repetition.
-Working on sched.py
+**Review:**
+Yes, this work follows the project's contribution guidelines. Commit messages follow the required format: a summary under 50 characters, a blank line, a detailed explanation, and an issue reference. Since these are toolchain/ Python changes, the applicable hard rules are the Python-specific ones rather than the Fortran-specific ones, which don't apply here.
+The pull request will follow the same standard: it will group the four cleanups into a single PR, following the guideline of one PR per logical change and matching the issue's own scope recommendation to file (a), (c), (d), (e) together and (b) separately. It will use the required template structure, describe what was tested, and reference the issue as Part of issue 1512.
 
-**Implement:** [Link to your branch/commits as you work]
-Link to branch: https://github.com/AnaPcode/MFC/tree/refactor/fp-stability-cleanup
-
-
-**Review:** [Self-review checklist - does it follow the project's contribution guidelines?]
-
-**Evaluate:** [How will you verify it works?]
+**Evaluate:**
+I will verify each change is behavior-preserving by comparing the program's actual output or values before and after my edits, rather than relying on the full build/test suite, since these changes don't affect simulation or build behavior.
 
 ---
 

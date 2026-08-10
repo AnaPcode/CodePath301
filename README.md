@@ -209,19 +209,32 @@ Command Line Image:
 
 ## Implementation Notes
 
-### Week [X] Progress
+### Week 10 Progress
 
-[What you built this week, challenges faced, decisions made]
+Completed the full scope of this issue (items (c), (d), and (e); item (a) required investigation but no code changes). Work included locating each described duplication by inspecting the cited code, implementing the maintainer's suggested fix for each file, verifying behavior preservation for each change, and writing up commit messages and a pull request description.
 
-### Week [Y] Progress
+A challenge was fp_stability.py (item (a)): the line numbers cited in the issue no longer matched the file, since the file changed significantly since the issue was filed. This required tracing the file's history to see if the described duplication had already been resolved elsewhere. I decided to make no changes to this file and to flag the finding to the maintainer.
 
-[Continue documenting as you work]
+A second decision point was item (e) (user_guide.py): the issue offered two valid fixes, deleting the redundant dictionary or assigning distinct colors to each organization. I chose deletion, since introducing new distinct colors is a user-facing design decision I wasn't in a position to make as a first-time contributor without more context on what those colors should represent.
+
+I also worked out a verification approach for changes with no existing automated test coverage: using a git worktree to run the pre-change version of the code side by side with my working copy, so I could directly diff real output before and after each change rather than relying on assumptions.
 
 ### Code Changes
 
-- **Files modified:** [List]
-- **Key commits:** [Links to important commits]
-- **Approach decisions:** [Why you chose certain approaches]
+- **Files modified:**
+  toolchain/mfc/gen_case_constraints_docs.py
+  toolchain/mfc/sched.py
+  toolchain/mfc/user_guide.py
+- **Key commits:**
+  Hoist level emoji map to LEVEL_EMOJI constant: https://github.com/MFlowCode/MFC/commit/718ef21fb2bfb9ae20cc460622190fdffabf2e46
+  Collapse schema-name getters into _named helper: https://github.com/MFlowCode/MFC/commit/212f2de1b68d980f0c029bf2795ba19bb52f769d
+  Read threshold seconds from HEADLESS_THRESHOLDS: https://github.com/MFlowCode/MFC/commit/1d5406eec4e750d75a6c7198fc8460a8b044eeb4
+  Delete ORG_COLORS and inline "yellow": https://github.com/AnaPcode/MFC/pull/1/changes/065e86f28280e13c90dc05e2e519541f1be84269
+- **Approach decisions:**
+  Followed the maintainer's suggested fix for each file as written, rather than proposing alternative designs, since the issue already specified the intended solution shape for each item.
+  Split gen_case_constraints_docs.py into two separate commits (one per distinct duplication) rather than one combined commit, since the emoji-map fix and the getter-collapse fix are logically independent and easier to review separately.
+  Chose not to implement distinct organization colors for item (e), deferring that as a possible future feature request rather than a mechanical dedup.
+  Chose not to run the full Fortran build/test suite, since none of the modified files affect build or simulation behavior; verified correctness directly through output comparison instead.
 
 ---
 

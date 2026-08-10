@@ -256,15 +256,21 @@ I also worked out a verification approach for changes with no existing automated
 
 ### Technical Skills Gained
 
-[What you learned technically]
+The main new technical skill was learning to use git worktree to check out a second copy of a branch (in my case, the original master) alongside my working copy, without disturbing my active changes. This let me run the pre-change and post-change versions of the same function side by side and directly diff their output, which became my main strategy for verifying that a refactor didn't change behavior when no existing automated tests covered the code.
+
+This issue also taught me good contribution practices I hadn't done deliberately before: splitting work into separate, logically independent commits rather than one large commit, and writing commit messages that actually follow a project's contribution guidelines (concise imperative summary, blank line, detailed explanation, issue reference). Working through this also meant making real decisions rather than just following instructions exactly, such as how to scope commits, how much detail to put in a PR description, and how to phrase testing claims accurately rather than overstating what I'd actually verified.
 
 ### Challenges Overcome
 
-[What was hard and how you solved it]
+Working with limited RAM (8GB, MacBook Air) meant I had to think carefully about what setup was actually necessary before diving in. Since the full MFC build compiles Fortran across multiple configurations, I had to figure out whether I needed to build the project at all for this issue, and realized that since all four affected files were pure Python under toolchain/, I could verify my changes by running the relevant functions directly, without a full build.
+
+Working in a new, large codebase without physics domain knowledge also slowed me down. Understanding what a file or function was actually responsible for, especially in files adjacent to physics/simulation logic, sometimes took longer than making the actual code change, since I had to be careful not to assume behavior I didn't fully understand.
+
+Deciding how thoroughly to test was also harder than expected. Some of these refactors felt intuitively safe, for example, reading a value from a dictionary instead of hardcoding it seems like it obviously shouldn't change behavior, so I kept second-guessing whether setting up a full before/after comparison for each file was overkill. In the end, I still went through with the more rigorous verification, and it turned out to be a good learning opportunity: it forced me to actually prove behavior was unchanged rather than relying on intuition, and gave me a reusable process (the git worktree comparison) I can apply to future refactors where "this should obviously be fine" isn't good enough justification on its own.
 
 ### What I'd Do Differently Next Time
 
-[Reflection on your process]
+I'd try to finish an issue in a shorter overall timeframe when possible, to reduce the risk of the target files changing. This is exactly what happened with item (a) (fp_stability.py): the file matched the issue's description when I first looked at it, and I had already worked out a solution locally, but I waited too long before implementing it. By the time I came back, the file had changed enough that my proposed solution for that file no longer applied.
 
 ---
 

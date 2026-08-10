@@ -397,6 +397,9 @@ I'd try to finish an issue in a shorter overall timeframe when possible, to redu
 ## Resources Used
 
 MFC Contributing Guide - covered commit message format, coding standards, testing expectations, CI pipeline structure, and PR submission process
+
 MFC Getting Started Guide - covered build environment setup, running the test suite, and toolchain usage
+
 Issue #1512 - the original issue describing all five tooling dedup tasks, including the maintainer's specific suggested fix for each file
+
 Claude (subscription provided by CodePath) - used throughout this project for help understanding the codebase, code suggestions, testing strategy, commit messages, the pull request description, and this read.me

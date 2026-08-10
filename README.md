@@ -70,15 +70,16 @@ Cloned the MFC repository and set up a local fork on a MacBook Air (8GB RAM), us
 
 ### Analysis
 
-[Your analysis of the root cause - what's causing the issue?]
-This issue is a refactor.
+This issue is not a functional bug, but a code quality / maintainability issue: several files in the toolchain contained duplicated logic that should have been written once and reused. The root cause across all items is the same underlying pattern: when a value, dictionary, or formula is needed in more than one place, copying it inline at each call site instead of extracting it into a single shared definition creates a maintenance hazard. If the value ever needs to change, a developer has to remember to update every copy; missing one introduces silent inconsistencies. The maintainer's own framing in the issue (a "grab-bag of small cleanups") confirms this is a refactor, not a bug fix: none of the described behavior is wrong, the code just repeats itself more than it should.
 
 ### Proposed Solution
 
-[High-level description of your fix approach]
-Maintener has outlined what needs to be refactored.
-There are 5 small cleanups betweeen 5 different files and maintener has outlined each one by assigning a letter as well as what is expected to be fixed.
-For the first file (a), there is a dictionary appearing in two places.
+The maintainer has already outlined the fix for each file directly in the issue, assigning each item a letter (a) through (e) along with the specific extraction or dedup expected. My approach will be to implement each of the maintainer's suggested fixes as written, rather than propose an alternative design, since the issue already specifies the intended solution shape for each file.
+
+(a) fp_stability.py: since the cited lines no longer match the file and the issue appears already resolved, I will make no changes to this file and will flag this to the maintainer rather than guess at intent.
+(c) gen_case_constraints_docs.py: two separate duplications will be addressed with the maintainer's suggested extractions. The three getter functions with identical bodies (differing only in the schema key they look up) will be collapsed into a single _named(param, value) helper, and the level-to-emoji mapping that is written out twice will be hoisted into one shared module-level constant.
+(d) sched.py: a table of named thresholds exists, but the actual comparison logic re-types the same numeric values by hand instead of reading them from that table. The comparisons will be updated to pull their values directly from the table, so the numbers are defined in exactly one place.
+(e) user_guide.py: a color-mapping dictionary is entirely redundant, every entry maps to the same value, and the lookup already defaults to that same value. The maintainer's suggested fix offers two options, delete the dictionary or give organizations distinct colors. I will choose to delete it, since assigning meaningful distinct colors is a user-facing design decision outside the scope of a mechanical dedup and I think better suited to its own discussion.
 
 ### Implementation Plan
 

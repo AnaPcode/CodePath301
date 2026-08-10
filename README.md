@@ -52,10 +52,15 @@ Cloned the MFC repository and set up a local fork on a MacBook Air (8GB RAM), us
 ### Steps to Reproduce
 
 1. Cloned MFlowCode/MFC in VS Code and checked out master at the commit the issue was filed against.
+
 2. For each file named in the issue, opened the cited line ranges in VS Code and manually inspected the code to confirm the described duplication existed as written.
+
 3. For gen_case_constraints_docs.py: located get_model_name, get_riemann_solver_name, and get_time_stepper_name at lines 133-151, and compared their bodies. Confirmed they were byte-identical apart from the schema key string, exactly as described. Also located the level to emoji map duplicated at lines 159 and 267.
+
 4. For sched.py: located the HEADLESS_THRESHOLDS table (lines 21-25) and the notify_long_running_threads consumer, and confirmed the seconds were separately hardcoded in the comparisons rather than read from the table.
+
 5. For user_guide.py: located ORG_COLORS (lines 56-65) and confirmed all 8 entries mapped to "yellow", with the lookup also defaulting to "yellow". This meant every org rendered the same color regardless of the dictionary's contents.
+
 6. For fp_stability.py: attempted to locate the described duplicated 13-key result dict at lines 970-983 and 1322-1335. Found the file had since grown to 697 lines, so the cited line numbers no longer corresponded to the described code. The underlying issue this item described appeared to already be resolved elsewhere.
 
 ### Reproduction Evidence

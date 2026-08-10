@@ -255,15 +255,14 @@ I also worked out a verification approach for changes with no existing automated
 
 ## Pull Request
 
-**PR Link:** [GitHub PR URL when submitted]
+**PR Link:** https://github.com/MFlowCode/MFC/pull/1720
 
 **PR Description:**
 
-## Description
+Description
+Addresses (a), (c), (d), (e) from issue 1512, following the specific fixes the issue suggested for each file except for (a).
 
-Addresses items (a), (c), (d), (e) from issue 1512, following the specific fixes the issue suggested for each file except for (a).
-
-(a) fp_stability.py - no changes made. The file seems to have changed since the issue was filed (now 697 lines), and the cited line numbers (970-983, 1322-1335) no longer correspond to the described code. I found a _blank_result(name, ...) -> dict helper already present, which may have resolved this.
+(a) fp_stability.py - no changes made. The file seems to have changed since the issue was filed (now 693 lines), and the cited line numbers (970-983, 1322-1335) no longer correspond to the described code. Found a _blank_result(name) helper already present, but couldn't locate a dict matching the original 13-key description anywhere in the file. Is this still an open issue, or can it be considered addressed?
 
 (c) gen_case_constraints_docs.py - two separate dedups:
 
@@ -277,34 +276,23 @@ get_model_name, get_riemann_solver_name, and get_time_stepper_name (lines 133-15
 
 All changes are mechanical and behavior-preserving, no functional or output changes are intended.
 
-
-### Type of change
-
-- Refactor
-
-
-## Testing
-
+Type of change
+Refactor
+Testing
 These changes are cleanups in the toolchain Python files, with no build-system or Fortran impact, so I verified behavior preservation directly rather than through the test suite. For two of the files, gen_case_constraints_docs.py and user_guide.py, I compared generated output before and after my changes. To do this I created a temporary copy of the original master branch alongside my working copy, so I could run both versions side by side. sched.py is time-dependent, so I verified it by value instead.
 
-gen_case_constraints_docs.py - I ran main(), the entry point that generates the case constraint documentation, and compared outputs from both the original file and the file with changes. The outputs were identical. That path covers both changes in this file: it calls render_playbook_card(), which uses _named, and both it and generate_playbook() use LEVEL_EMOJI.
+gen_case_constraints_docs.py - I ran main(), the entry point that generates the case constraint documentation, and compared outputs from both the original file and the file with changes. Outputs were the same. The path covered both changes in this file: it calls render_playbook_card(), which uses _named, and both it and generate_playbook() use LEVEL_EMOJI.
 
 user_guide.py - same comparison on _generate_clusters_content(). Outputs were identical, and all orgs still render yellow.
 
 sched.py - prints only after minutes of real elapsed time, so I compared values rather than output. The table holds 120, 600, and 1800 seconds, the same numbers as the 2 * 60, 10 * 60, 30 * 60 literals they replaced.
 
-I also used file hashes (a way to confirm two files are byte-for-byte identical) as an extra check on top of the direct comparisons for gen_case_constraints_docs.py and user_guide.py where both matched.
+I also used file hashes (a way to confirm two files are byte-for-byte identical) as an extra check on top of the direct comparisons for gen_case_constraints_docs.py outputs and user_guide.py outputs where both matched.
 
-<details>
-<summary>Commands used for testing</summary>
+Commands used for testing
+​bash cd ~/MFC mkdir -p ~/mfc-verify git worktree add /tmp/original_master master ​
 
-​```bash
-cd ~/MFC
-mkdir -p ~/mfc-verify
-git worktree add /tmp/original_master master
-​```
-
-**1. gen_case_constraints_docs.py**
+1. gen_case_constraints_docs.py
 
 ​```bash
 cd /tmp/original_master && python3 -c 'import sys; sys.path.insert(0,"toolchain")
@@ -316,7 +304,7 @@ from mfc.gen_case_constraints_docs import main; main()' > ~/mfc-verify/docs_afte
 diff ~/mfc-verify/docs_before.txt ~/mfc-verify/docs_after.txt && echo "gen_case_constraints_docs.py: NO CHANGE"
 ​```
 
-**2. user_guide.py**
+2. user_guide.py
 
 ​```bash
 cd /tmp/original_master && python3 -c 'import sys; sys.path.insert(0,"toolchain")
@@ -328,41 +316,23 @@ from mfc.user_guide import _generate_clusters_content as f; print(f())' > ~/mfc-
 diff ~/mfc-verify/guide_before.txt ~/mfc-verify/guide_after.txt && echo "user_guide.py: NO CHANGE"
 ​```
 
-**3. sched.py** — no output to compare, so check the numbers directly
+3. sched.py
 
-​```bash
-cd ~/MFC && python3 -c 'import sys; sys.path.insert(0,"toolchain")
-from mfc.sched import HEADLESS_THRESHOLDS as H
-print(H[0][0], H[1][0], H[2][0], "should be", 2*60, 10*60, 30*60)'
-​```
+​bash cd ~/MFC && python3 -c 'import sys; sys.path.insert(0,"toolchain") from mfc.sched import HEADLESS_THRESHOLDS as H print(H[0][0], H[1][0], H[2][0], "should be", 2*60, 10*60, 30*60)' ​
 Result:
-​```
-120 600 1800 should be 120 600 1800
-​```
+​ 120 600 1800 should be 120 600 1800 ​
 
-**Proof (hashes)**
+Proof (hashes)
 
-​```bash
-shasum ~/mfc-verify/*.txt
-​```
+​bash shasum ~/mfc-verify/*.txt ​
 Result:
-​```
-3016ca54d8cafc7fed2e41f49ac3fd4dd2cababd  ~/mfc-verify/docs_after.txt
-3016ca54d8cafc7fed2e41f49ac3fd4dd2cababd  ~/mfc-verify/docs_before.txt
-a22ed36dc99d289c79f9c9dae2486fe2b5a5f5d6  ~/mfc-verify/guide_after.txt
-a22ed36dc99d289c79f9c9dae2486fe2b5a5f5d6  ~/mfc-verify/guide_before.txt
-​```
+​ 3016ca54d8cafc7fed2e41f49ac3fd4dd2cababd  ~/mfc-verify/docs_after.txt 3016ca54d8cafc7fed2e41f49ac3fd4dd2cababd  ~/mfc-verify/docs_before.txt a22ed36dc99d289c79f9c9dae2486fe2b5a5f5d6  ~/mfc-verify/guide_after.txt a22ed36dc99d289c79f9c9dae2486fe2b5a5f5d6  ~/mfc-verify/guide_before.txt ​
 
-**Cleanup**
+Cleanup
 
-​```bash
-cd ~/MFC && git worktree remove /tmp/original_master
-​```
+​bash cd ~/MFC && git worktree remove /tmp/original_master ​
 
-</details>
-
-
-Part of issue 1512
+Part of 1512
 
 
 **Maintainer Feedback:**

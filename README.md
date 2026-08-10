@@ -234,6 +234,11 @@ A second decision point was item (e) (user_guide.py): the issue offered two vali
 
 I also worked out a verification approach for changes with no existing automated test coverage: using a git worktree to run the pre-change version of the code side by side with my working copy, so I could directly diff real output before and after each change rather than relying on assumptions.
 
+Commented on the issue notifying that I had submitted a PR, that I did not change file (a), and mentioned this is my first contribution and that I'd appreciate feedback:
+"Hello! Opened a PR covering (c), (d), and (e): https://github.com/MFlowCode/MFC/pull/1720
+For (a) (fp_stability.py): it appears the file has changed, couldn't find the described dict anymore, so left the file unchanged.
+First contribution to MFC, appreciate any feedback!"
+
 ### Code Changes
 
 - **Files modified:**

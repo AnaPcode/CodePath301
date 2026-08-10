@@ -4,7 +4,7 @@
 **Contribution Number:** 1  
 **Student:** Anastasia Pupo
 **Issue:** https://github.com/MFlowCode/MFC/issues/1512
-**Status:** Phase III
+**Status:** Phase IV
 
 ---
 
@@ -47,30 +47,22 @@ toolchain/mfc/user_guide.py:56-65 — all-yellow ORG_COLORS
 
 ### Environment Setup
 
-[Notes on setting up your local development environment - challenges you faced, how you solved them]
-Utilized instructions from https://mflowcode.github.io/documentation/getting-started.html. Ran the program on a MacBook Air with operating system macOS 26.3.
-First, cloned the repository for local development. The utilized homebrew to install the packages.
-Challeges: While installing packages with homebrew, there was a error with qt. Will monitor if the issue affects any part of the program.
-<img width="909" height="717" alt="Screenshot 2026-06-14 at 11 59 18 PM" src="https://github.com/user-attachments/assets/62409c38-2816-44a3-87fb-5b0d70c8f014" />
-
-
-Error when building MFC:
-<img width="1071" height="109" alt="Screenshot 2026-06-15 at 12 19 39 AM" src="https://github.com/user-attachments/assets/8c35a8db-dc97-4406-9808-e9cf671c7796" />
-Resolved by changing to utilizing Python 3.13 instead of Python 3.14 due to known issue with ensurepip in 3.14.
-
-Transitioned from MacBook Air to utilizing Github codespaces. Followed instructions with only a change in utilizing 1 core to run the examples instead of 2 cores.
+Cloned the MFC repository and set up a local fork on a MacBook Air (8GB RAM), using VS Code as my editor and its integrated terminal for running commands. Since all four files I worked on (gen_case_constraints_docs.py, sched.py, user_guide.py, fp_stability.py) are pure Python under toolchain/, no full MFC build (Fortran compilation) was required to reproduce or verify the issue. I could import and run the relevant functions directly with Python. This was a helpful constraint to discover early, since a full ./mfc.sh build would have been considerably more demanding on my machine's limited RAM.
 
 ### Steps to Reproduce
 
-1. Run MFC
-
-The issue is a refactor so need to run program to view how program currently runs.
+1. Cloned MFlowCode/MFC in VS Code and checked out master at the commit the issue was filed against.
+2. For each file named in the issue, opened the cited line ranges in VS Code and manually inspected the code to confirm the described duplication existed as written.
+3. For gen_case_constraints_docs.py: located get_model_name, get_riemann_solver_name, and get_time_stepper_name at lines 133-151, and compared their bodies. Confirmed they were byte-identical apart from the schema key string, exactly as described. Also located the level to emoji map duplicated at lines 159 and 267.
+4. For sched.py: located the HEADLESS_THRESHOLDS table (lines 21-25) and the notify_long_running_threads consumer, and confirmed the seconds were separately hardcoded in the comparisons rather than read from the table.
+5. For user_guide.py: located ORG_COLORS (lines 56-65) and confirmed all 8 entries mapped to "yellow", with the lookup also defaulting to "yellow". This meant every org rendered the same color regardless of the dictionary's contents.
+6. For fp_stability.py: attempted to locate the described duplicated 13-key result dict at lines 970-983 and 1322-1335. Found the file had since grown to 697 lines, so the cited line numbers no longer corresponded to the described code. The underlying issue this item described appeared to already be resolved elsewhere.
 
 ### Reproduction Evidence
 
 - **Commit showing reproduction:** https://github.com/AnaPcode/MFC/tree/master
-- **Screenshots/logs:** not applicable
-- **My findings:** [What you discovered during reproduction]
+- **Screenshots/logs:** not applicable. Verification was done by direct code inspection in VS Code, not by running a program that produces visible output or errors.
+- **My findings:** Three of the four items, (c), (d), and (e), matched the issue's description exactly. The duplication was real, unambiguous, and located at the cited lines. The fourth item (a) did not reproduce: the file had changed substantially since the issue was filed, and a helper function already present in the code appeared to address the same duplication independently.
 
 ---
 

@@ -100,9 +100,13 @@ Using UMPIRE framework (adapted):
 **Implement:**
 Link to branch: https://github.com/AnaPcode/MFC/tree/feature/tooling-dedup
 Link to 4 commits:
+
 Hoist level emoji map to LEVEL_EMOJI constant: https://github.com/MFlowCode/MFC/commit/718ef21fb2bfb9ae20cc460622190fdffabf2e46
+
 Collapse schema-name getters into _named helper: https://github.com/MFlowCode/MFC/commit/212f2de1b68d980f0c029bf2795ba19bb52f769d
+
 Read threshold seconds from HEADLESS_THRESHOLDS: https://github.com/MFlowCode/MFC/commit/1d5406eec4e750d75a6c7198fc8460a8b044eeb4
+
 Delete ORG_COLORS and inline "yellow": https://github.com/AnaPcode/MFC/pull/1/changes/065e86f28280e13c90dc05e2e519541f1be84269
 
 **Review:**
@@ -118,18 +122,88 @@ I will verify each change is behavior-preserving by comparing the program's actu
 
 ### Unit Tests
 
-- [ ] Test case 1: [Description]
-- [ ] Test case 2: [Description]
-- [ ] Test case 3: [Description]
+No new automated unit tests were added. These changes are refactors with no new behavior, so rather than writing new unit test functions, correctness was verified through direct manual comparison of function output before and after each change (detailed under Manual Testing below).
 
 ### Integration Tests
 
-- [ ] Integration scenario 1
-- [ ] Integration scenario 2
+Not applicable. These changes are isolated to individual functions within three toolchain/ Python files, with no interaction between subsystems (e.g., no build-system, Fortran, or cross-module integration to test).
 
 ### Manual Testing
 
-[What you tested manually and results]
+gen_case_constraints_docs.py: ran the documentation-generation entry point against both the original (master) and modified code, using a git worktree to compare both versions side by side. Compared the two outputs with diff and confirmed they were identical; also confirmed with matching file hashes.
+user_guide.py: ran the cluster-content generation function against both versions using the same approach. Outputs were identical, and all organizations still rendered the same color as before.
+sched.py: since this function doesn't produce directly comparable output, verified correctness by value instead: confirmed the threshold values read from HEADLESS_THRESHOLDS (120, 600, 1800 seconds) matched the hardcoded values they replaced.
+
+All three checks confirmed the refactors preserved existing behavior exactly, with no differences in output or underlying values.
+
+<details>
+<summary>Commands used for testing</summary>
+
+​```bash
+cd ~/MFC
+mkdir -p ~/mfc-verify
+git worktree add /tmp/original_master master
+​```
+
+**1. gen_case_constraints_docs.py**
+
+​```bash
+cd /tmp/original_master && python3 -c 'import sys; sys.path.insert(0,"toolchain")
+from mfc.gen_case_constraints_docs import main; main()' > ~/mfc-verify/docs_before.txt
+
+cd ~/MFC && python3 -c 'import sys; sys.path.insert(0,"toolchain")
+from mfc.gen_case_constraints_docs import main; main()' > ~/mfc-verify/docs_after.txt
+
+diff ~/mfc-verify/docs_before.txt ~/mfc-verify/docs_after.txt && echo "gen_case_constraints_docs.py: NO CHANGE"
+​```
+
+**2. user_guide.py**
+
+​```bash
+cd /tmp/original_master && python3 -c 'import sys; sys.path.insert(0,"toolchain")
+from mfc.user_guide import _generate_clusters_content as f; print(f())' > ~/mfc-verify/guide_before.txt
+
+cd ~/MFC && python3 -c 'import sys; sys.path.insert(0,"toolchain")
+from mfc.user_guide import _generate_clusters_content as f; print(f())' > ~/mfc-verify/guide_after.txt
+
+diff ~/mfc-verify/guide_before.txt ~/mfc-verify/guide_after.txt && echo "user_guide.py: NO CHANGE"
+​```
+
+**3. sched.py** — no output to compare, so check the numbers directly
+
+​```bash
+cd ~/MFC && python3 -c 'import sys; sys.path.insert(0,"toolchain")
+from mfc.sched import HEADLESS_THRESHOLDS as H
+print(H[0][0], H[1][0], H[2][0], "should be", 2*60, 10*60, 30*60)'
+​```
+Result:
+​```
+120 600 1800 should be 120 600 1800
+​```
+
+**Proof (hashes)**
+
+​```bash
+shasum ~/mfc-verify/*.txt
+​```
+Result:
+​```
+3016ca54d8cafc7fed2e41f49ac3fd4dd2cababd  ~/mfc-verify/docs_after.txt
+3016ca54d8cafc7fed2e41f49ac3fd4dd2cababd  ~/mfc-verify/docs_before.txt
+a22ed36dc99d289c79f9c9dae2486fe2b5a5f5d6  ~/mfc-verify/guide_after.txt
+a22ed36dc99d289c79f9c9dae2486fe2b5a5f5d6  ~/mfc-verify/guide_before.txt
+​```
+
+**Cleanup**
+
+​```bash
+cd ~/MFC && git worktree remove /tmp/original_master
+​```
+
+</details>
+
+Command Line Image:
+<img width="836" height="554" alt="Screenshot 2026-08-09 at 9 23 20 PM" src="https://github.com/user-attachments/assets/d1e7f8f2-5c52-4e08-ba8d-f1ab91dc1e77" />
 
 ---
 

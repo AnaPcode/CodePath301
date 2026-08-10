@@ -82,8 +82,11 @@ This issue is not a functional bug, but a code quality / maintainability issue: 
 The maintainer has already outlined the fix for each file directly in the issue, assigning each item a letter (a) through (e) along with the specific extraction or dedup expected. My approach will be to implement each of the maintainer's suggested fixes as written, rather than propose an alternative design, since the issue already specifies the intended solution shape for each file.
 
 (a) fp_stability.py: since the cited lines no longer match the file and the issue appears already resolved, I will make no changes to this file and will flag this to the maintainer rather than guess at intent.
+
 (c) gen_case_constraints_docs.py: two separate duplications will be addressed with the maintainer's suggested extractions. The three getter functions with identical bodies (differing only in the schema key they look up) will be collapsed into a single _named(param, value) helper, and the level-to-emoji mapping that is written out twice will be hoisted into one shared module-level constant.
+
 (d) sched.py: a table of named thresholds exists, but the actual comparison logic re-types the same numeric values by hand instead of reading them from that table. The comparisons will be updated to pull their values directly from the table, so the numbers are defined in exactly one place.
+
 (e) user_guide.py: a color-mapping dictionary is entirely redundant, every entry maps to the same value, and the lookup already defaults to that same value. The maintainer's suggested fix offers two options, delete the dictionary or give organizations distinct colors. I will choose to delete it, since assigning meaningful distinct colors is a user-facing design decision outside the scope of a mechanical dedup and I think better suited to its own discussion.
 
 ### Implementation Plan
@@ -96,10 +99,15 @@ Using UMPIRE framework (adapted):
 
 **Plan:**
 1, Create a feature branch to hold changes for the good-first-issue tasks, since the maintainer has requested two separate pull requests: one covering (a), (c), (d), (e), and a second, separate one for (b).
+
 2. Modify gen_case_constraints_docs.py (c) with two separate commits, since this file has two distinct cleanups: first, add a LEVEL_EMOJI module-level constant and update both locations that previously duplicated the emoji map to reference it instead. Second, add a _named(param, value) helper function and update the three getter call sites (model_eqns, riemann_solver, time_stepper) to use it.
+
 3. Modify sched.py (d) in a single commit: update the comparisons in notify_long_running_threads to read threshold values directly from the HEADLESS_THRESHOLDS table instead of re-hardcoding them.
+
 4. Modify user_guide.py (e) in a single commit: remove the redundant ORG_COLORS dictionary and inline the single color value it always resolved to at the lookup site.
+
 5. Verify each change preserves existing behavior by comparing actual output (or underlying values, where output isn't directly comparable) before and after each modification, since these are refactors and no new automated tests are being added for behavior that is not changing.
+
 6. Push the branch and open the pull request covering (c), (d), and (e), noting that (a) required no changes.
 
 **Implement:**
@@ -136,7 +144,9 @@ Not applicable. These changes are isolated to individual functions within three 
 ### Manual Testing
 
 gen_case_constraints_docs.py: ran the documentation-generation entry point against both the original (master) and modified code, using a git worktree to compare both versions side by side. Compared the two outputs with diff and confirmed they were identical; also confirmed with matching file hashes.
+
 user_guide.py: ran the cluster-content generation function against both versions using the same approach. Outputs were identical, and all organizations still rendered the same color as before.
+
 sched.py: since this function doesn't produce directly comparable output, verified correctness by value instead: confirmed the threshold values read from HEADLESS_THRESHOLDS (120, 600, 1800 seconds) matched the hardcoded values they replaced.
 
 All three checks confirmed the refactors preserved existing behavior exactly, with no differences in output or underlying values.
